@@ -1,6 +1,5 @@
-namespace webapp;
-
-public class filereader
+namespace webapp.FileSorting.cs.lib;
+public class Filereader
 {
     
 }

@@ -1,6 +1,6 @@
-namespace webapp;
+namespace webapp.FileSorting.cs.lib;
 
-public class json
+public class Json
 {
     
 }
