@@ -3,7 +3,6 @@ using System.Linq;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
-
 internal class SQLConnector
 {
     private SqlConnection Conn;

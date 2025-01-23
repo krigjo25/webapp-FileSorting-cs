@@ -4,9 +4,9 @@ namespace webapp.FileSorting.cs.lib;
 
 public class FileReader
 {
-    //  Initializing the columns
-    string[] arg = ["ID INT PRIMARY KEY AUTOINCREMENT", "Name TEXT NOT NULL"];
-    string[] arg2 = ["ID INT UNIQUE() AUTOINCREMENT", "TeamID INT PRIMARY KEY", "Name TEXT NOT NULL", "Quality TEXT NOT NULL"];
+    // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
+    
+    
 
     //  Initializing the lists
     List<string> Team = [];
@@ -15,8 +15,7 @@ public class FileReader
     Dictionary<string, List<object>> columns = [];
     
     SQLConnector SQL = new SQLConnector("", true, "sa","Maximan1", "1434" );
-
-
+    
     public void ReadFile()
     {
         // Adopted https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
@@ -38,8 +37,8 @@ public class FileReader
         }
 
         //  Initialize the List of columns
-        InitializingList(Team, arg, "Teams");
-        InitializingList(Student, arg2, "Students");
+        InitializingList(Team, "Teams");
+        InitializingList(Student,"Students");
 
         // Remove all values
         Team.Clear();
@@ -57,7 +56,6 @@ public class FileReader
             if (line.Contains("Team"))
             {
                 team = line;
-
             }
             
             //  Ensure that the line contains a name
@@ -79,8 +77,12 @@ public class FileReader
             
         }
         
-        
+        //  Initializing the columns
+        string[] arg = ["ID INT PRIMARY KEY AUTOINCREMENT", "Name TEXT NOT NULL"];
+        string[] arg2 = ["ID INT UNIQUE() AUTOINCREMENT", "TeamID INT PRIMARY KEY", "Name TEXT NOT NULL", "Quality TEXT NOT NULL"];
         // Send the data to the database
+        
+        
         InsertDataKeys("Teams", columns);
         InsertDataValues("Students", columns);
         

@@ -3,7 +3,6 @@ namespace Webapp.sorting.cs;
 
 class Program
 {
-    
     public static void Main(string[] args)
     {
         FileReader filereader = new FileReader();
