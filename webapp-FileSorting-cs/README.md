@@ -33,7 +33,6 @@ gh repo clone krigjo25/webapp-FileSorting-cs
 ## Usage
 Build the project:  
 dotnet build`
-Run the project:  `
-dotnet run
-Learn More
-For more information, [visit the ASP.NET Core documentation.](https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-9.0)
+
+
+[visit the ASP.NET Core documentation.](https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-9.0)
