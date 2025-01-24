@@ -6,23 +6,21 @@ public class FileReader
 {
     // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
     
-    
-
     //  Initializing the lists
     List<string> Team = [];
     List<string> Student = [];
     List<object> persons = [];
+    
+    // Dictionary to store the columns
     Dictionary<string, List<object>> columns = [];
     
-    SQLConnector SQL = new SQLConnector("", true, "sa","Maximan1", "1434" );
-    
-    public void ReadFile()
+    SQLConnector SQL = new SQLConnector("", true, "sa","-", "1434" );
+
+   
+    public void ReadFile(string path)
     {
-        // Adopted https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
-
-        //  Initializing the variables
-        const string path = "/home/krigjo25/RiderProjects/webapp-FileSorting-cs/webapp-FileSorting-cs/Jeg er uorganisert.txt";
-
+        // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
+        
         try
         {
             if (!File.Exists(path))
@@ -35,61 +33,63 @@ public class FileReader
             Console.WriteLine(e);
             throw;
         }
-
-        //  Initialize the List of columns
-        InitializingList(Team, "Teams");
-        InitializingList(Student,"Students");
-
-        // Remove all values
-        Team.Clear();
-        Student.Clear();
         
-        // Read the file
+        InitializeTables();
+        
+        //  Initialize the variables
         string name = null;
         string team = null;
         
         //  Read the file
-        foreach (var line in File.ReadLines(path))
+        using (var f = File.OpenText(path))
         {
-
-            //  Ensure that the line contains the word "Team"
-            if (line.Contains("Team"))
+            while (f.ReadLine() is { } line)
             {
-                team = line;
-            }
-            
-            //  Ensure that the line contains a name
-            else if (name == null)
-            {
-                name = line.Trim();
-            }
-            
-            //  Add the person to the list
-            else
-            {
-                var person = new Person(name, line, team);
-                persons.Add(person);
+                //  Ensure that the line contains the word "Team"
+                if (line.Contains("Team"))
+                {
+                    team = line;
+                }
                 
-                columns[team] = persons;
-                
-                name = null;
-            }
+                //  Ensure that the line contains a name
+                else if (name == null)
+                {
+                    name = line.Trim();
+                }
             
+                //  Add the person to the list
+                else
+                {
+                    var person = new Person(name, line, team);
+                    persons.Add(person);
+                
+                    columns[team] = persons;
+                
+                    name = null;
+                }
+            }
         }
         
-        //  Initializing the columns
-        string[] arg = ["ID INT PRIMARY KEY AUTOINCREMENT", "Name TEXT NOT NULL"];
-        string[] arg2 = ["ID INT UNIQUE() AUTOINCREMENT", "TeamID INT PRIMARY KEY", "Name TEXT NOT NULL", "Quality TEXT NOT NULL"];
         // Send the data to the database
-        
-        
-        InsertDataKeys("Teams", columns);
-        InsertDataValues("Students", columns);
+        //InsertDataKeys("Teams", columns);
+        //InsertDataValues("Students", columns);
         
     }
-
-    public void InitializingList(List<string> column, string[] array, string table)
+    
+    private void InitializeTables()
     {
+        //  Initializing the columns
+        string[] arg = ["ID INT PRIMARY KEY AUTOINCREMENT", "Name TEXT NOT NULL"];
+        string[] arg1 = ["ID INT UNIQUE() AUTOINCREMENT", "TeamID INT PRIMARY KEY", "Name TEXT NOT NULL", "Quality TEXT NOT NULL"];
+        
+        //  Initialize the List of columns
+        InitializingList(arg, "Teams");
+        InitializingList(arg1,"Students");
+    }
+    
+    public void InitializingList(string[] array, string table)
+    {
+        List<string> column = [];
         //  Add the columns into the list
         for (int i = 0; i < array.Length; i++)
         {
@@ -109,11 +109,9 @@ public class FileReader
         {
             columns.Add("Name");
         }
-
         foreach (var element in data.Keys)
         {
             query.Add(element);
-            
             
             SQL.InsertData(table, columns, query);
             
@@ -145,7 +143,7 @@ public class FileReader
         SQL.CreateDatabase("GetAcademy");
 
         //  Create the table
-        //SQL.CreateTable(table, column);
+        SQL.CreateTable(table, column);
 
     }
 }

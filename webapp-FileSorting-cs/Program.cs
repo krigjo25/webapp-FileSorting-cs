@@ -6,7 +6,7 @@ class Program
     public static void Main(string[] args)
     {
         FileReader filereader = new FileReader();
-        filereader.ReadFile();
+        filereader.ReadFile("/home/krigjo25/RiderProjects/webapp-FileSorting-cs/webapp-FileSorting-cs/Jeg er uorganisert.txt");
     }
     
 }
