@@ -20,6 +20,8 @@ public class FileReader
     public void ReadFile(string path)
     {
         // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
+        // Create the database
+        SQL.CreateDatabase("GetAcademy");
         
         try
         {
@@ -45,6 +47,7 @@ public class FileReader
         {
             while (f.ReadLine() is { } line)
             {
+                line = line.Trim();
                 //  Ensure that the line contains the word "Team"
                 if (line.Contains("Team"))
                 {
@@ -54,7 +57,7 @@ public class FileReader
                 //  Ensure that the line contains a name
                 else if (name == null)
                 {
-                    name = line.Trim();
+                    name = line;
                 }
             
                 //  Add the person to the list
@@ -72,7 +75,7 @@ public class FileReader
         
         // Send the data to the database
         InsertValuesToTeams("Teams", columns);
-        //InsertDataValues("Students", columns);
+        InsertValuesToStudents("Students", columns);
         
     }
     
@@ -96,61 +99,48 @@ public class FileReader
             column.Add(array[i]);
         }
         
-        InitializeDatabase(column, table);
+        //  Create the table
+        SQL.InitializeTable(table, column);
+        
     }
 
-    private void InsertValuesToTab(string table, Dictionary<string, List<object>> data)
+    private void InsertValuesToTeams(string table, Dictionary<string, List<object>> data)
     {
         List<object> query = [];
         List<object> columns = [];
         
-        switch (table)
-        {
-            case "Teams":
-                columns.Add("Name");
-                break;
-            case "Students":
-                columns.AddRange("TeamID", "Name", "Quality");
-                break;
-            default:
-                return;
-        }
+        columns.Add("Name");
+
         
         foreach (var element in data.Keys)
         {
-            query.Add(element);
-            
-            SQL.InsertData(table, columns, query);
-            
-            
-            query.Remove(element);
+            query.Add($"({element})");
 
         }
+        SQL.InsertData(table, columns, query);
         
         
     }
-    private void InsertDataValues(string table, Dictionary<string, List<object>> data)
+    private void InsertValuesToStudents(string table, Dictionary<string, List<object>> data)
     {
+        //  Initialize the list of queries and columns
         List<object> columns = [];
-        List<object> query = [];
-        
-        
         columns.AddRange("TeamID", "Name", "Quality");
-        query.AddRange(data.SelectMany(element => element.Value));
-
+        
+        List<object> query = [];
+        foreach (var obj in data.Values.SelectMany(element => element))
+        {
+            //  Ensure that the data is of type Person
+            if (obj is Person person)
+            {
+                // Initialize the object into a string
+                string str = $"({person.Team}, {person.Name}, {person.Quality})";
+                query.Add(str);
+            }
+        }
+        
         //  Initialize the SQLConnector
-        //SQL.InsertData(table, columns, query);
+        SQL.InsertData(table, columns, query);
     }
-
-    private void InitializeDatabase(List<string> column, string table)
-    {
-        //  Initialize the SQLConnector
-
-        // Create the database
-        SQL.CreateDatabase("GetAcademy");
-
-        //  Create the table
-        SQL.InitializeTable(table, column);
-
-    }
+    
 }
