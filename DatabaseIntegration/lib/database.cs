@@ -43,7 +43,7 @@ internal class SQLConnector
     {
         
         string query;
-        bool exists = false;
+        var duplicate = false;
         
         if (table != string.Empty)
         {
@@ -69,19 +69,19 @@ internal class SQLConnector
             if (Tables.Any(element => element.ToString() == table))
             {
                 Console.WriteLine("Table already exists");
-                exists = true;
+                duplicate = true;
                 
             }
+            else
+            {
+                duplicate = false;
+            }
         }
-        else
-        {
-            exists = false;
-        }
+        
         
         //  Ensure that the database exists
         if (db != string.Empty)
         {
-                        
             //  Initialize the list
             List<string> Databases = [];
             
@@ -95,10 +95,12 @@ internal class SQLConnector
             //  Add the rows into the list
             foreach (var row in Data)
             {
-                for (int i = 0; i < row.Length; i++)
-                {
-                    Databases.Add($"{row[i]}");
-                }
+                Databases.AddRange(row.Select(t => $"{t}"));
+            }
+
+            foreach (var element in Databases)
+            {
+                Console.WriteLine("Database: " + element);
             }
             
             //  Ensure that the database exists
@@ -108,12 +110,12 @@ internal class SQLConnector
                 
                 //   Assign the database to the current database connection. (Assuming that the user wants to use the existing database)
                 _db = db;
-                exists = true;
+                duplicate = true;
             }
-        }
-        else
-        {
-            exists = false;
+            else
+            {
+                duplicate = false;
+            }
         }
         
         //  Ensure that the data is not duplicated
@@ -126,7 +128,7 @@ internal class SQLConnector
             //  Initialize a query to select the data
             
             query = $"SELECT * FROM {table};";
-            Console.WriteLine(query);
+
             //   Select the data from the database
             var Data = SelectData(query);
             
@@ -147,17 +149,15 @@ internal class SQLConnector
                     if (el == element.ToString())
                     {
                         Console.WriteLine("One or more rows is duplicated");
-                        exists = true;
+                        duplicate = true;
+                        break;
                     }
+                    duplicate = false;
                 }
             }
         }
-        else
-        {
-            exists = false;
-        }
         
-        return exists;
+        return duplicate;
         
         
     }
@@ -166,6 +166,7 @@ internal class SQLConnector
     {
         //  Initialize the list of data
         List<object[]> Data = [];
+        
         //  Select the data
         using (var conn = new SqlConnection($"Server={_server};Database={_db};User Id={_user};Password={_password};"))
         {
@@ -196,6 +197,7 @@ internal class SQLConnector
 
     public void InitializeTable(string table, List<string> columns)
     {
+        Console.WriteLine(_db);
         if (DuplicationConfirmation(table, _db))
         {
             return;
@@ -232,20 +234,61 @@ internal class SQLConnector
     public void InsertData(string table, List<object> columns, List<object> data)
     {
         // Ensure the data is not dupblicated and table exists
-        if (!DuplicationConfirmation(table) || !DuplicationConfirmation("", _db) && DuplicationConfirmation(table, "", data))
+        Console.WriteLine(_db);
+        if (!DuplicationConfirmation(table) || !DuplicationConfirmation("", _db) && DuplicationConfirmation(table, _db, data))
         {
+            
+            Console.WriteLine($"Data is duplicated {DuplicationConfirmation(table)}, {DuplicationConfirmation("", _db)}, {DuplicationConfirmation(table, _db, data)}");
             return;
         }
         
         //  Initialize the query
-        string query = $"INSERT INTO {table} ({string.Join(", ", columns)}) VALUES {string.Join(", ", data)}";
+        string query = $"INSERT INTO {table} ({string.Join(", ", columns)}) VALUES {string.Join(",", data)};";
         
         //  Insert the data
         using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
         {
             //  Execute the query
             ExecuteQuery(query);
+            Console.WriteLine(query);
 
+        }
+    }
+    
+    public void DeleteData(string table, string column, string data)
+    {
+        //  Initialize the query
+        string query = $"DELETE FROM {table} WHERE {column} = {data}";
+        
+        //  Delete the data
+        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
+        {
+            //  Execute the query
+            ExecuteQuery(query);
+        }
+    }
+    public void DropTable(string table, string db)
+    {
+        //  Initialize the query
+        string query = $"DROP TABLE {table}";
+        
+        //  Drop the table
+        using (SqlConnection conn = new SqlConnection($"Server={_server};Database={db};User Id={_user};Password={_password};"))
+        {
+            //  Execute the query
+            ExecuteQuery(query);
+        }
+    }
+    public void DropDatabase(string db)
+    {
+        //  Initialize the query
+        string query = $"DROP DATABASE {db}";
+        
+        //  Drop the database
+        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
+        {
+            //  Execute the query
+            ExecuteQuery(query);
         }
     }
 }

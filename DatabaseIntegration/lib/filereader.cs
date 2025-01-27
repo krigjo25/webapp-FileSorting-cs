@@ -14,9 +14,16 @@ public class FileReader
     // Dictionary to store the columns
     Dictionary<string, List<object>> columns = [];
     
-    SQLConnector SQL = new SQLConnector("", true, "sa","Maximan1", "1434" );
+    SQLConnector SQL = new SQLConnector(
+        $"{Environment.GetEnvironmentVariable("MSQL_DB")}", true, 
+        $"{Environment.GetEnvironmentVariable("MSQL_USER")}",
+        $"{Environment.GetEnvironmentVariable("MSQL_password")}", 
+        $"{Environment.GetEnvironmentVariable("MSQL_port")}" );
 
-   
+    var user = 
+    var passcode = ;
+    var db = ;
+    var server = Environment.GetEnvironmentVariable("MSQL_SERVER");
     public void ReadFile(string path)
     {
         // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
@@ -90,7 +97,7 @@ public class FileReader
         InitializingList(arg1,"Students");
     }
     
-    public void InitializingList(string[] array, string table)
+    private void InitializingList(string[] array, string table)
     {
         List<string> column = [];
         //  Add the columns into the list
@@ -114,7 +121,7 @@ public class FileReader
         
         foreach (var element in data.Keys)
         {
-            query.Add($"({element})");
+            query.Add($"('{element}')");
 
         }
         SQL.InsertData(table, columns, query);
@@ -134,7 +141,7 @@ public class FileReader
             if (obj is Person person)
             {
                 // Initialize the object into a string
-                string str = $"({person.Team}, {person.Name}, {person.Quality})";
+                string str = $"('{person.Team}', '{person.Name}', '{person.Quality}')";
                 query.Add(str);
             }
         }

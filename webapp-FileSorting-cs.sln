@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapp-FileSorting-cs", "webapp-FileSorting-cs\webapp-FileSorting-cs.csproj", "{E544D3EB-79B9-49D0-B768-28D6D30D2B6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseIntegration", "DatabaseIntegration\DatabaseIntegration.csproj", "{E544D3EB-79B9-49D0-B768-28D6D30D2B6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{DC7B8560-C0DE-44E6-A6BD-405181FC9155}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentAPI", "StudentAPI\StudentAPI.csproj", "{7015D736-23EC-4E30-B73A-BF3F42A5EA49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		{E544D3EB-79B9-49D0-B768-28D6D30D2B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E544D3EB-79B9-49D0-B768-28D6D30D2B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E544D3EB-79B9-49D0-B768-28D6D30D2B6A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC7B8560-C0DE-44E6-A6BD-405181FC9155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC7B8560-C0DE-44E6-A6BD-405181FC9155}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC7B8560-C0DE-44E6-A6BD-405181FC9155}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC7B8560-C0DE-44E6-A6BD-405181FC9155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7015D736-23EC-4E30-B73A-BF3F42A5EA49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7015D736-23EC-4E30-B73A-BF3F42A5EA49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7015D736-23EC-4E30-B73A-BF3F42A5EA49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7015D736-23EC-4E30-B73A-BF3F42A5EA49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
