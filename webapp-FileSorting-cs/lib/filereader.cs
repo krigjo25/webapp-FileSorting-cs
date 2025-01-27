@@ -14,7 +14,7 @@ public class FileReader
     // Dictionary to store the columns
     Dictionary<string, List<object>> columns = [];
     
-    SQLConnector SQL = new SQLConnector("", true, "sa","-", "1434" );
+    SQLConnector SQL = new SQLConnector("", true, "sa","Maximan1", "1434" );
 
    
     public void ReadFile(string path)
@@ -71,7 +71,7 @@ public class FileReader
         }
         
         // Send the data to the database
-        //InsertDataKeys("Teams", columns);
+        InsertValuesToTeams("Teams", columns);
         //InsertDataValues("Students", columns);
         
     }
@@ -79,8 +79,8 @@ public class FileReader
     private void InitializeTables()
     {
         //  Initializing the columns
-        string[] arg = ["ID INT PRIMARY KEY AUTOINCREMENT", "Name TEXT NOT NULL"];
-        string[] arg1 = ["ID INT UNIQUE() AUTOINCREMENT", "TeamID INT PRIMARY KEY", "Name TEXT NOT NULL", "Quality TEXT NOT NULL"];
+        string[] arg = ["ID INT IDENTITY(1,1) PRIMARY KEY", "Name TEXT NOT NULL"];
+        string[] arg1 = ["ID INT IDENTITY(1,1) PRIMARY KEY", "TeamID TEXT NOT NULL", "Name TEXT NOT NULL", "Quality TEXT NOT NULL"];
         
         //  Initialize the List of columns
         InitializingList(arg, "Teams");
@@ -99,16 +99,23 @@ public class FileReader
         InitializeDatabase(column, table);
     }
 
-    private void InsertDataKeys(string table, Dictionary<string, List<object>> data)
+    private void InsertValuesToTab(string table, Dictionary<string, List<object>> data)
     {
         List<object> query = [];
         List<object> columns = [];
         
-        
-        if (table == "Teams")
+        switch (table)
         {
-            columns.Add("Name");
+            case "Teams":
+                columns.Add("Name");
+                break;
+            case "Students":
+                columns.AddRange("TeamID", "Name", "Quality");
+                break;
+            default:
+                return;
         }
+        
         foreach (var element in data.Keys)
         {
             query.Add(element);
@@ -132,7 +139,7 @@ public class FileReader
         query.AddRange(data.SelectMany(element => element.Value));
 
         //  Initialize the SQLConnector
-        SQL.InsertData(table, columns, query);
+        //SQL.InsertData(table, columns, query);
     }
 
     private void InitializeDatabase(List<string> column, string table)
@@ -143,7 +150,7 @@ public class FileReader
         SQL.CreateDatabase("GetAcademy");
 
         //  Create the table
-        SQL.CreateTable(table, column);
+        SQL.InitializeTable(table, column);
 
     }
 }

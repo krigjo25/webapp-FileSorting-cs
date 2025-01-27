@@ -7,240 +7,201 @@ internal class SQLConnector
 {
     // https://learn.microsoft.com/en-us/sql/?view=sql-server-ver16   -   SQL Documentation
     
-    private readonly string _db;
+    private string _db;
+    private readonly string _user;
+    private readonly string _port;
+    private readonly string _server;
+    private readonly string _password;
     
-    private readonly SqlConnection Conn;
-    
-    
-    public SQLConnector(string db="", bool trucon = false, string user = "", string password = "", string port = "1143", string server = "localhost\\MSSQLLocalDB")
+    public SQLConnector(string db="", bool trucon = false, string user = "", string password = "", string port = "1143", string server = "localhost")
     {
-        
         _db = db;
-
-        //  Initialize the connection string
-        string connectionString = $"Server={server},{port};Database={db};User ID={user};Password={password}";
+        _user = user;
+        _port = port;
+        _server = server;
+        _password = password;
         
-        //  Initialize the connection
-        Conn = new SqlConnection(connectionString);
-
-        try
-        {
-            if (Conn == null)
-            {
-                throw new Exception("Connection failed");
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-
-        Console.WriteLine("Connection successful");
-
     }
 
-    
-    public void CreateDatabase(string db)
+    private void ExecuteQuery(string query)
     {
-
-        //  Initialize the list
-        List<string> Databases = [];
-
-        string query;
-        
-        // Ensure that the database exists
-        using (Conn)
+        //  Execute the query
+        using (var conn = new SqlConnection($"Server={_server};Database={_db};User Id={_user};Password={_password};"))
         {
-            Conn.Open();
+            //  Open the connection
+            conn.Open();
             
-            //   Fetch the databases
-            query = "SELECT name FROM sys.databases";
-            
-            var Data = SelectData(query);
-            
-            using (Data)
+            //  Execute the query
+            var cmd = new SqlCommand(query, conn);
+            cmd.ExecuteNonQuery();
+        }
+    }
+    private string InitializeList(List<object> Data)
             {
-                while (Data.Read())
+                //  Initialize the query
+                string query = "";
+    
+                //  Ensure that the data is a list of Person objects
+                foreach (var element in Data)
                 {
-                    var element = Data.GetString(0);
-                    Databases.Add(element);
+    
+                    if (element.GetType() == typeof(Person))
+                    {
+                        //  Add columns into the query
+                        var person = (Person)element;
+    
+                        query += $"({person.Team}, {person.Name}, {person.Quality.Trim()})";
+    
+                        //  Ensure that the last element does not have a comma
+                        if (person != Data.Last())
+                        {
+                            query += ", ";
+                        }
+                    }
+                    else
+                    {
+                        //  Add columns into the query
+                        query += element;
+    
+                        //  Ensure that the last element does not have a comma
+                        if (element != Data.Last())
+                        {
+                            query += ", ";
+    
+                        }
+                        
+                    }
                 }
+                return query;
+            }
+
+    private List<object[]> SelectData(string query)
+    {
+        //  Initialize the list of data
+        List<object[]> Data = [];
+
+        //  Select the data
+        using (var conn = new SqlConnection($"Server={_server};Database={_db};User Id={_user};Password={_password};"))
+        {
+            conn.Open();
+            //  Inititalizing a new command
+            var cmd = new SqlCommand(query, conn);
+
+            //  Selecting the data
+            var reader = cmd.ExecuteReader();
+                //  Fetch the data
+            while (reader.Read())
+            {
+                //  Initializing a new SQL Data row
+                object[] row = new object[reader.FieldCount];
+
+                //  Add the data into the row
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    row[i] = reader[i];
+                }
+
+                Data.Add(row);
+            }
+            return Data;
+        }
+    }
+
+    public void InitializeTable(string table, List<string> columns)
+    {
+        // Initialize the Table List
+        List<string> Tables = [];
+        
+        //  Ensure that the table does not exist
+        string query = $"SELECT TABLE_NAME FROM {_db}.INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'{table}'";
+        
+        //  Select the data
+        var data = SelectData(query);
+        
+        //  Add the rows into the list
+        foreach (var row in data)
+        {
+            for (int i = 0; i < row.Length; i++)
+            {
+                Tables.Add($"{row[i]}");
             }
         }
-
-        if (Databases.Any(element => element.ToString() == db))
+        
+        //  Ensure that the table does not exist
+        if (Tables.Any(element => element.ToString() == table))
         {
-            Console.WriteLine("Database already exists");
+            Console.WriteLine("Table already exists");
             return;
         }
         
-        
-        using (Conn)
+        //  Create a new table
+        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
         {
             //   Fetch the databases
-            
+
             //  Initialize the query
-            query = $"CREATE DATABASE {db}";
-        
+            query = $"CREATE TABLE {table} ({string.Join(", ", columns)})";
+
             //  Execute the query
-            var cmd = new SqlCommand(query, Conn);
-            //cmd.ExecuteNonQuery();
-            Console.WriteLine(query);
+            ExecuteQuery(query);
         }
-
+        
     }
-
-    public void CreateTable(string table, List <string> columns)
-    {
-        //  Initializing Tables
-        List<string> Tables = [];
-
-        using (var con = Conn)
+    public void CreateDatabase(string db)
         {
-            //  Fetch the tables
+            //  Initialize the list
+            List<string> Databases = [];
             
-            //  Add to list
-            
-        }
+            //  Initialize a query to select the data
+            string query;
+            query = "SELECT name FROM sys.databases";
 
-        foreach (var element in Tables)
-        {
-            if (element == table)
+            //   Select the data from the database
+            var Data = SelectData(query);
+
+            //  Add the rows into the list
+            foreach (var row in Data)
             {
-                Console.WriteLine("Table already exists");
+                for (int i = 0; i < row.Length; i++)
+                {
+                    Databases.Add($"{row[i]}");
+                }
+            }
+            
+            //  Ensure that the database exists
+            if (Databases.Any(element => element.ToString() == db)) 
+            {
+                Console.WriteLine("Database already exists");
+                //   Assign the database to the current database connection. (Assuming that the user wants to use the existing database)
+                _db = db;
                 return;
             }
-        }
-        
-        //  Initialize the query
-        string query = "";
-        
-        //  Add columns into the query
-        foreach (var element in columns)
-        {
-            //  Add the element into the query
-            query += element;
             
-            //  Ensure that the last element does not have a comma
-            if (element != columns.Last()  )
+            //  Initialize the database
+            using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
             {
-                query += ", ";
-                
-            }
-            else
-            {
-                query += ");";
+                //   Fetch the databases
+
+                //  Initialize the query
+                query = $"CREATE DATABASE {db}";
+
+                //  Execute the query
+                ExecuteQuery(query);
             }
         }
-        using (Conn)
-        {
-            
-        
-            // Execute the query
-            //var cmd = new SqlCommand($"CREATE TABLE IF NOT EXISTS {table}({query})", Conn);
-            //cmd.ExecuteNonQuery();
-        }
-        Console.WriteLine(query);
 
-    }
-
-    public void InsertData(string table, List<object> column, List<object> Data = null)
+    public void InsertData(string table, List<object> columns, List<object> data)
     {
-        
-        //  Ensure that the table exists
-        List<string> Tables = [];
-        
-        using (var con = Conn)
+        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
         {
-            //  Fetch the tables
-            
-            //  Add to list
-            
-        }
-        
-        //   Ensure that the table exists
-        foreach (var element in Tables)
-        {
-            if (element != table )
-            {
-                if (element == Tables.Last())
-                {
-                    Console.WriteLine("Table does not exist");
-                    return;
-                }
-            }
-        }
-        
-        //  Add columns into the query
-        var data = InitializeList(Data);
-        var columns = InitializeList(column);
-        
-        //  Initializing the query
-        string query = $"INSERT INTO {table} ({columns}) VALUES {data};";
-        Console.WriteLine(query);
-        
-        // //  Open the connection
+            //   Fetch the databases
 
-        using (Conn)
-        {
+            //  Initialize the query
+            string query = $"CREATE TABLE {table} ({string.Join(", ", columns)}) VALUES {string.Join(",", data)}";
+
             //  Execute the query
-            var cmd = new SqlCommand(query, Conn);
-            //cmd.ExecuteNonQuery();
+            //ExecuteQuery(query);
         }
-        
+        return;
     }
-    
-    private string InitializeList(List<object> Data)
-    {
-        //  Initialize the query
-        string query = "";
-
-        //  Ensure that the data is a list of Person objects
-        foreach (var element in Data)
-        {
-
-            if (element.GetType() == typeof(Person))
-            {
-                //  Add columns into the query
-                var person = (Person)element;
-
-                query += $"({person.Team}, {person.Name}, {person.Quality.Trim()})";
-
-                //  Ensure that the last element does not have a comma
-                if (person != Data.Last())
-                {
-                    query += ", ";
-                }
-            }
-            else
-            {
-                //  Add columns into the query
-                query += element;
-
-                //  Ensure that the last element does not have a comma
-                if (element != Data.Last())
-                {
-                    query += ", ";
-
-                }
-                    
-            }
-        }
-        return query;
-    }
-
-    private SqlDataReader? SelectData(string query)
-    {
-        using (Conn)
-        {
-            
-            //  Execute the query
-            var cmd = new SqlCommand(query, Conn);
-            var reader = cmd.ExecuteReader();
-
-            return reader.HasRows ? reader : null;
-        }
-    }
-    
 }
