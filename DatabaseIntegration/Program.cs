@@ -5,8 +5,9 @@ class Program
 {
     public static void Main(string[] args)
     {
-        FileReader filereader = new FileReader();
-        filereader.ReadFile("/home/krigjo25/RiderProjects/DatabaseIntegration/DatabaseIntegration/Jeg er uorganisert.txt");
+        //FileReader filereader = new FileReader();
+        //filereader.ReadFile("/home/krigjo25/RiderProjects/DatabaseIntegration/DatabaseIntegration/Jeg er uorganisert.txt");
+        Console.WriteLine($"{Environment.GetEnvironmentVariable("MSQL_USER")}");
     }
     
 }
