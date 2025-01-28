@@ -1,13 +1,21 @@
+using DotNetEnv;
 using webapp.FileSorting.cs.lib;
+
 namespace Webapp.sorting.cs;
+
+
+
 
 class Program
 {
     public static void Main(string[] args)
     {
-        //FileReader filereader = new FileReader();
-        //filereader.ReadFile("/home/krigjo25/RiderProjects/DatabaseIntegration/DatabaseIntegration/Jeg er uorganisert.txt");
-        Console.WriteLine($"{Environment.GetEnvironmentVariable("MSQL_USER")}");
+        //  Loading the Environment Variables
+        Env.Load();
+        
+        FileReader filereader = new FileReader();
+        filereader.ReadFile("/home/krigjo25/RiderProjects/DatabaseIntegration/DatabaseIntegration/Jeg er uorganisert.txt");
+
     }
     
 }

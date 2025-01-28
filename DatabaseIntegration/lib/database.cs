@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using DotNetEnv;
 
 namespace webapp.FileSorting.cs.lib;
 using System.Linq;
@@ -9,19 +10,23 @@ internal class SQLConnector
 {
     // https://learn.microsoft.com/en-us/sql/?view=sql-server-ver16   -   SQL Documentation
     
-    private string _db;
-    private readonly string _user;
-    private readonly string _port;
-    private readonly string _server;
-    private readonly string _password;
+    private static string? _db;
+    private static string? _user;
+    private static string? _port;
+    private static string? _server;
+    private static string? _password;
     
-    public SQLConnector(string db="", bool trucon = false, string user = "", string password = "", string port = "1143", string server = "localhost")
+    public SQLConnector()
     {
-        _db = db;
-        _user = user;
-        _port = port;
-        _server = server;
-        _password = password;
+        
+        //  Loading the Environment Variables
+        Env.Load();
+        
+        _db = Environment.GetEnvironmentVariable("MSQL_DB");
+        _user = Environment.GetEnvironmentVariable("MSQL_USER");
+        _port = Environment.GetEnvironmentVariable("MSQL_port");
+        _server = Environment.GetEnvironmentVariable("MSQL_server");
+        _password = Environment.GetEnvironmentVariable("MSQL_password");
         
     }
 
@@ -39,7 +44,7 @@ internal class SQLConnector
         }
     }
 
-    private bool DuplicationConfirmation(string table = "", string db = "", List<object> Column = null)
+    private bool DuplicationConfirmation(string table = "", string? db = "", List<object> Column = null)
     {
         
         string query;

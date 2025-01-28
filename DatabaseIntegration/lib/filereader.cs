@@ -1,10 +1,9 @@
-using System.Text;
+using DotNetEnv;
 
 namespace webapp.FileSorting.cs.lib;
 
 public class FileReader
 {
-    // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
     
     //  Initializing the lists
     List<string> Team = [];
@@ -14,18 +13,21 @@ public class FileReader
     // Dictionary to store the columns
     Dictionary<string, List<object>> columns = [];
 
-    private SQLConnector SQL = new SQLConnector(
-        $"{Environment.GetEnvironmentVariable("MSQL_DB")}", true,
-        $"{Environment.GetEnvironmentVariable("MSQL_USER")}",
-        $"{Environment.GetEnvironmentVariable("MSQL_password")}",
-        $"{Environment.GetEnvironmentVariable("MSQL_port")}",
-        $"{Environment.GetEnvironmentVariable("MSQL_server")}");
+    private SQLConnector SQL = new SQLConnector();
     
     public void ReadFile(string path)
     {
-        // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
+        /*
+         *  Adopted from https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
+         *  The code reads a file and stores the data in a database 
+         */
+        
+        //  Loading the Environment Variables
+        Env.Load();
+        
+        
         // Create the database
-        SQL.CreateDatabase("GetAcademy");
+        SQL.CreateDatabase($"{Environment.GetEnvironmentVariable("MSQL_DB")}");
         
         try
         {
