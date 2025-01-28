@@ -13,17 +13,14 @@ public class FileReader
     
     // Dictionary to store the columns
     Dictionary<string, List<object>> columns = [];
-    
-    SQLConnector SQL = new SQLConnector(
-        $"{Environment.GetEnvironmentVariable("MSQL_DB")}", true, 
-        $"{Environment.GetEnvironmentVariable("MSQL_USER")}",
-        $"{Environment.GetEnvironmentVariable("MSQL_password")}", 
-        $"{Environment.GetEnvironmentVariable("MSQL_port")}" );
 
-    var user = 
-    var passcode = ;
-    var db = ;
-    var server = Environment.GetEnvironmentVariable("MSQL_SERVER");
+    private SQLConnector SQL = new SQLConnector(
+        $"{Environment.GetEnvironmentVariable("MSQL_DB")}", true,
+        $"{Environment.GetEnvironmentVariable("MSQL_USER")}",
+        $"{Environment.GetEnvironmentVariable("MSQL_password")}",
+        $"{Environment.GetEnvironmentVariable("MSQL_port")}",
+        $"{Environment.GetEnvironmentVariable("MSQL_server")}");
+    
     public void ReadFile(string path)
     {
         // https://github.com/Toorq91/GetPreparedTeamsStudents/blob/main/Program.cs
