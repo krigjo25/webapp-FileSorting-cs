@@ -3,9 +3,6 @@ using webapp.FileSorting.cs.lib;
 
 namespace Webapp.sorting.cs;
 
-
-
-
 class Program
 {
     public static void Main(string[] args)
@@ -14,8 +11,9 @@ class Program
         Env.Load();
         
         FileReader filereader = new FileReader();
-        filereader.ReadFile("/home/krigjo25/RiderProjects/DatabaseIntegration/DatabaseIntegration/Jeg er uorganisert.txt");
-
+        filereader.ReadFile("/home/krigjo25/RiderProjects/webapp-FileSorting-cs/DatabaseIntegration/Jeg er uorganisert.txt");
+        
+        Console.WriteLine($"Server={Environment.GetEnvironmentVariable("MSQL_server")};Database={Environment.GetEnvironmentVariable("MSQL_db")};User Id={Environment.GetEnvironmentVariable("MSQL_user")};Password={Environment.GetEnvironmentVariable("MSQL_passcode")};");
     }
     
 }

@@ -1,20 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication4;
-
-public class Person
-{
-    public Person(string name, string quality, string team)
-    {
-        Name = name;
-        Quality = quality;
-        Team = team;
-    }
-
-    public string Team { get; set; }
-    public string Name { get; set; }
-    public string Quality { get; set; }
-}  
+namespace Webapp.sorting.cs;
 
 public class DatabaseApi : DbContext
 {
@@ -22,5 +8,5 @@ public class DatabaseApi : DbContext
     {
     }
 
-    public DbSet<Person> person { get; set; }
+    public DbSet<Person> person  => Set<Person>();
 }

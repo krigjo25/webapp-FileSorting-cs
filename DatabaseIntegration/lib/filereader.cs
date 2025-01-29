@@ -26,8 +26,7 @@ public class FileReader
         Env.Load();
         
         
-        // Create the database
-        SQL.CreateDatabase($"{Environment.GetEnvironmentVariable("MSQL_DB")}");
+        
         
         try
         {
@@ -41,6 +40,9 @@ public class FileReader
             Console.WriteLine(e);
             throw;
         }
+        
+        // Create the database
+        SQL.CreateDatabase($"{Environment.GetEnvironmentVariable("MSQL_DB")}");
         
         InitializeTables();
         
