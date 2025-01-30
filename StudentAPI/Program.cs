@@ -48,5 +48,10 @@ app.MapGet("/students/", async (MSSQL db) =>
     await db.Students.ToListAsync()
 );
 
+// Get student by Team
+app.MapGet("/students/{TeamID}", async (MSSQL db, string TeamID) => 
+    await db.Students.FindAsync(TeamID)
+);
+
 
 app.Run();
