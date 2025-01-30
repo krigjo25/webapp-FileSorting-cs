@@ -15,8 +15,7 @@ string _user = Environment.GetEnvironmentVariable("MSQL_user");
 string _server = Environment.GetEnvironmentVariable("MSQL_server");
 string _password = Environment.GetEnvironmentVariable("MSQL_passcode");
 
-var conn = builder.Configuration.GetConnectionString($"Server={_server};Database={_db};User Id={_user};Password={_password};TrustServerCertificate=True;");
-
+var conn = $"Server={_server};Database={_db};User Id={_user};Password={_password};TrustServerCertificate=True;";
 
 
 builder.Services.AddControllers();
@@ -46,7 +45,7 @@ app.UseHttpsRedirection();
 
 // Get all students
 app.MapGet("/students/", async (MSSQL db) => 
-    await db.Persons.ToListAsync()
+    await db.Student.ToListAsync()
 );
 
 
