@@ -29,12 +29,12 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+//  Ensure that the enironment is development
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student API")); // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.  Replace "Your API Name" with a descriptive name.
 }
 
 app.MapGet("/", () => "{ Use correct api to fetch data }");
