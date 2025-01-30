@@ -8,5 +8,5 @@ public class MSSQL : DbContext
     public MSSQL(DbContextOptions<MSSQL> options) : base(options)
     {
     }
-    public DbSet<Students> Students  => Set<Students>();
+    public DbSet<Student> Students  => Set<Student>();
 }

@@ -1,6 +1,6 @@
 namespace Webapp.sorting.cs;
 
-public class Students
+public class Student
 {
     public int ID { get; set; }
     public string TeamID { get; set; }
