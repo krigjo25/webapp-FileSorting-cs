@@ -45,7 +45,7 @@ app.UseHttpsRedirection();
 
 // Get all students
 app.MapGet("/students/", async (MSSQL db) => 
-    await db.Student.ToListAsync()
+    await db.Students.ToListAsync()
 );
 
 
