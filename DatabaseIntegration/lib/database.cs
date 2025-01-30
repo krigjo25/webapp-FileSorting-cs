@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using DotNetEnv;
-
 namespace webapp.FileSorting.cs.lib;
+
+using DotNetEnv;
 using System.Linq;
 using System.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System.Collections.Generic;
 
 internal class SQLConnector
@@ -30,17 +30,21 @@ internal class SQLConnector
         
     }
 
+    [Obsolete("Obsolete")]
     private void ExecuteQuery(string query)
     {
         //  Execute the query
         using (var conn = new SqlConnection($"Server={_server};Database={_db};User Id={_user};Password={_password};"))
         {
+            var log = new Logger();
             //  Open the connection
             conn.Open();
             
             //  Execute the query
             var cmd = new SqlCommand(query, conn);
             cmd.ExecuteNonQuery();
+            
+                //($"{_user} has logged in, and performed the following query: {query}.\n in the server {_server} using database {_db}");
         }
     }
 
@@ -203,12 +207,8 @@ internal class SQLConnector
         string query;
         query = $"CREATE TABLE {table} ({string.Join(", ", columns)})";
         
-        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
-        {
-            //  Execute the query
-            ExecuteQuery(query);
-
-        }
+        //  Execute the query
+        ExecuteQuery(query);
         
     }
     public void CreateDatabase(string db)
@@ -221,12 +221,8 @@ internal class SQLConnector
             //  Initialize the query
             string query = $"CREATE DATABASE {db}";
             
-            //  Initialize the database
-            using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
-            {
-                //  Execute the query
-                ExecuteQuery(query);
-            }
+            //  Execute the query
+            ExecuteQuery(query);
         }
 
     public void InsertData(string table, List<object> columns, List<object> data)
@@ -240,12 +236,9 @@ internal class SQLConnector
         //  Initialize the query
         string query = $"INSERT INTO {table} ({string.Join(", ", columns)}) VALUES {string.Join(",", data)};";
         
-        //  Insert the data
-        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
-        {
-            //  Execute the query
-            ExecuteQuery(query);
-        }
+        //  Execute the query
+        ExecuteQuery(query);
+
     }
     
     public void DeleteData(string table, string column, string data)
@@ -253,35 +246,24 @@ internal class SQLConnector
         //  Initialize the query
         string query = $"DELETE FROM {table} WHERE {column} = {data}";
         
-        //  Delete the data
-        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
-        {
-            //  Execute the query
-            ExecuteQuery(query);
-        }
+        //  Execute the query
+        ExecuteQuery(query);
+
     }
     public void DropTable(string table, string db)
     {
         //  Initialize the query
         string query = $"DROP TABLE {table}";
         
-        //  Drop the table
-        using (SqlConnection conn = new SqlConnection($"Server={_server};Database={db};User Id={_user};Password={_password};"))
-        {
-            //  Execute the query
-            ExecuteQuery(query);
-        }
+        //  Execute the query
+        ExecuteQuery(query);
     }
     public void DropDatabase(string db)
     {
         //  Initialize the query
         string query = $"DROP DATABASE {db}";
         
-        //  Drop the database
-        using (SqlConnection conn = new SqlConnection($"Server={_server};Database=master;User Id={_user};Password={_password};"))
-        {
-            //  Execute the query
-            ExecuteQuery(query);
-        }
+        //  Execute the query
+        ExecuteQuery(query);
     }
 }

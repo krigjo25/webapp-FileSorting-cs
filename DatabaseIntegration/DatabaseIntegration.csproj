@@ -16,4 +16,10 @@
       <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.Identity.Client">
+        <HintPath>..\..\..\.nuget\packages\microsoft.identity.client\4.61.3\lib\net6.0\Microsoft.Identity.Client.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

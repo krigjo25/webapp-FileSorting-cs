@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Webapp.sorting.cs;
 
-public class DatabaseApi : DbContext
+
+public class MSSQL : DbContext
 {
-    public DatabaseApi(DbContextOptions<DatabaseApi> options) : base(options)
+    public MSSQL(DbContextOptions<MSSQL> options) : base(options)
     {
     }
-
-    public DbSet<Person> person  => Set<Person>();
+    public DbSet<Students> Persons  => Set<Students>();
 }
