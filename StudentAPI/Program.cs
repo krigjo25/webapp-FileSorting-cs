@@ -1,7 +1,7 @@
 using DotNetEnv;
-using Microsoft.EntityFrameworkCore;
 using Webapp.sorting.cs;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 // Load the environment variables
 Env.Load();
 
@@ -45,7 +45,7 @@ app.MapControllers();
 app.UseHttpsRedirection();
 
 // Get all students
-app.MapGet("/students", async (DatabaseApi db) => 
+app.MapGet("/students/", async (MSSQL db) => 
     await db.Persons.ToListAsync()
 );
 
