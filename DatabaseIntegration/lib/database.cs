@@ -211,6 +211,7 @@ internal class SQLConnector
         ExecuteQuery(query);
         
     }
+    
     public void CreateDatabase(string db)
         {
             if (!DuplicationConfirmation("", db))
