@@ -1,6 +1,7 @@
 #   FileSorting API
-This is a simple API that sorts files in a
-directory based on the file extension.
+A simple code that inserts data into a database,
+and creates an minimal API for the user.
+
 
 The API is built using ASP.NET Core 9.0 and Entity Framework Core 9.0.
 More information on [The API](./StudentAPI/README.md),[The Data Integration](./DatabaseIntegration/README.MD)
@@ -44,6 +45,7 @@ This project is licensed under [GNV.v3](./LICENCE).
 
 ## Notes from the developer
 Created with love, for python programming,
+
 
 Thanks for reading, and have a blessed day,<br>
 @krigjo25
